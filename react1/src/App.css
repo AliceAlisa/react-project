@@ -1,13 +1,38 @@
 .App {
-  text-align: center;
+ /* text-align: center;*/
   margin-top: 50px;
+  margin-left: 5%;
 }
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
-
+.message_form {
+  display: flex;
+}
+.message_text {
+  padding-bottom: 10px;
+}
+.author {
+  font-size: 18px;
+  font-weight: bold;
+}
+.messages {
+  margin-bottom: 25px;
+}
+.text_area {
+  resize: none;
+  font-family: sans-serif;
+  border: 2px solid rgb(14, 50, 168);
+}
+.submit_button {
+  background-color: rgb(14, 50, 168);
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
