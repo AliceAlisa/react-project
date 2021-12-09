@@ -1,11 +1,24 @@
 .App {
- /* text-align: center;*/
+ text-align: center;
   margin-top: 50px;
   margin-left: 5%;
   display: flex;
   justify-content: space-around;
 }
+.link-nav {
+  text-decoration: none;
+}
+.link-nav:visited {
+  color: black;
+}
+.link-nav:hover {
+  color: blue;
+}
 
+.chats-list {
+  display: flex;
+  justify-content: space-around;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
