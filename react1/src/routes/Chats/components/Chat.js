@@ -36,6 +36,7 @@ export const Chat = ({ list }) => {
 
     useEffect(() => {
         setMessageList([])
+        focusText();
     }, [chatId]);
 
     const onChange = (event) => {
