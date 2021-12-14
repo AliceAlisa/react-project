@@ -1,9 +1,30 @@
 import './App.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { TextField, Button, List, ListItem } from "@material-ui/core";
+import { Chats } from './components/Chats.js'
 
 function App() {
   const [messageList, setMessageList] = useState([]);
   const [value, setValue] = useState('');
+  const focusedRef = useRef();
+  const chatList = [
+    {
+      id: '1',
+      name: 'Chat one'
+    },
+    {
+      id: '2',
+      name: 'Chat two'
+    },
+    {
+      id: '3',
+      name: 'Chat tree'
+    },
+    {
+      id: '4',
+      name: 'Chat four'
+    },
+  ];
 
   useEffect(() => {
     const checkMessage = () => {
@@ -12,7 +33,8 @@ function App() {
           const copyState = [...state];
           copyState.push({
             author: 'bot',
-            text: 'hello! I am bot'
+            text: 'hello! I am bot',
+            id: Date.now()
           })
           return copyState;
         })
@@ -36,22 +58,39 @@ function App() {
   const onSubmit = (event) => {
     event.preventDefault();
     const copyMessages = [...messageList];
-    copyMessages.push({ author: 'user', text: value });
+    copyMessages.push({ author: 'user', text: value, id: Date.now() });
     setMessageList(copyMessages);
     setValue('');
-  }
+    focusText();
+  };
+
+  const focusText = () => {
+    focusedRef.current.focus();
+  };
 
   return (
     <div className="App">
-      <div className="messages"> {
-        messageList.map((message, i) => <div className="message_text" key={i}><span className="author">{message.author}</span> : {message.text}</div>)
-      }
+      <Chats list={chatList} />
+      <div className="messages-container">
+        <List className="messages"> {
+          messageList.map((message) => <ListItem className="message_text" key={message.id}><span className="author">{message.author}</span> : {message.text}</ListItem>)
+        }
+        </List>
+        <form onSubmit={onSubmit} action="" className="message_form">
+          <TextField
+            inputRef={focusedRef}
+            className="text_area"
+            style={{ margin: '20px' }}
+            id="outlined-basic"
+            label="Message"
+            variant="outlined"
+            onChange={onChange}
+            value={value}
+            autoFocus
+          />
+          <Button className="submit_button" type="submit" variant="outlined" style={{ border: 'none', backgroundColor: 'rgb(14, 50, 168)', color: 'white' }}>Send</Button>
+        </form>
       </div>
-      <form onSubmit={onSubmit} action="" className="message_form">
-        <textarea className="text_area" rows="3" cols="25" onChange={onChange} value={value}>
-        </textarea>
-        <button className="submit_button" type="submit">Send</button>
-      </form>
     </div>
   );
 }
