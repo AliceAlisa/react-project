@@ -1,14 +1,11 @@
 import { Button, Input } from "@material-ui/core";
 import { useState, useCallback } from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { createChat } from '../../../store/chats/actions'
-import { getChatsList } from "../../../store/chats/selectors";
-
 
 export const ChatAdd = () => {
     const dispatch = useDispatch();
     const [formValue, setFormValue] = useState('')
-    const list = useSelector(getChatsList)
 
     const formReset = useCallback(() => {
         setFormValue('')
@@ -24,7 +21,6 @@ export const ChatAdd = () => {
             id: Date.now().toString(),
             name: formValue
         }))
-        console.log(list);
         formReset()
     };
 

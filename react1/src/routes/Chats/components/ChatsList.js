@@ -7,7 +7,9 @@ import { deleteChat } from "../../../store/chats/actions";
 import { ChatAdd } from './ChatAdd.js'
 import { deleteMessages } from '../../../store/messages/actions';
 
-export const ChatsList = ({ deleteChat, deleteMessages, chats }) => {
+
+export const ChatsListRender = ({ deleteChat, deleteMessages, chats }) => {
+
     return (
         <div className="list-chats">
             <h3>Your Chats</h3>
@@ -25,6 +27,7 @@ export const ChatsList = ({ deleteChat, deleteMessages, chats }) => {
         </div>
     );
 }
+
 const mapStateToProps = (state) => {
     return {
         chats: getChatsList(state),
@@ -34,4 +37,4 @@ const mapDispatchToProps = {
     deleteChat,
     deleteMessages
 };
-export const ChatsListWithConnect = connect(mapStateToProps, mapDispatchToProps)(ChatsList);
+export const ChatsList = connect(mapStateToProps, mapDispatchToProps)(ChatsListRender);

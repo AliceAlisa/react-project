@@ -7,7 +7,6 @@ export const Profile = () => {
     const currenOptionState = useSelector((state) => state.profile.someOption);
     const dispatch = useDispatch();
 
-    console.log(currenOptionState)
     return (
         <div>
             <Link to='/' className='link-nav'> Home </Link> /

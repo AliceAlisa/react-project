@@ -1,11 +1,11 @@
 import '../../../App.css';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { TextField, Button, List, ListItem } from "@material-ui/core";
 import { Redirect, useParams } from 'react-router-dom';
 import { getChatsList } from "../../../store/chats/selectors";
 import { useDispatch, useSelector } from "react-redux";
 import { getMessagesByChatId } from '../../../store/messages/selectors'
-import { newMessage } from '../../../store/messages/actions';
+import { addMessageWithThunk } from '../../../store/messages/actions';
 
 export const Chat = () => {
     const [value, setValue] = useState('');
@@ -16,26 +16,11 @@ export const Chat = () => {
     const ChatsList = useSelector(getChatsList)
     const messages = useSelector(getMessagesByChatId([chatId])) || [];
 
-    useEffect(() => {
-        const checkMessage = () => {
-            if (messages.length > 0 && messages[messages.length - 1].author === 'user') {
-                dispatch(newMessage([chatId], {
-                    author: 'bot',
-                    text: 'hello! I am bot',
-                    id: Date.now()
-                }))
-            }
-            return
-        };
-
-        const timerAnswer = setTimeout(() => {
-            checkMessage();
-        }, 1500);
-
-        return () => {
-            clearTimeout(timerAnswer);
-        }
-    });
+    const onSubmit = useCallback(() => {
+        dispatch(addMessageWithThunk(chatId, 'user', value));
+        setValue('');
+        focusText();
+    }, [chatId, dispatch, value]);
 
     useEffect(() => {
         focusText();
@@ -44,18 +29,6 @@ export const Chat = () => {
     const onChange = (event) => {
         setValue(event.target.value);
     }
-
-    const onSubmit = (event) => {
-        event.preventDefault();
-        dispatch(newMessage([chatId], {
-            author: 'user',
-            text: value,
-            id: Date.now()
-        }))
-        setValue('');
-        focusText();
-        console.log(messages)
-    };
 
     const focusText = () => {
         focusedRef.current.focus();
