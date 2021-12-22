@@ -9,7 +9,8 @@ export const Chats = () => {
     return (
         <>
             <Link to='/' className='link-nav'> Home </Link> /
-            <Link to='/profile' className='link-nav'> Profile </Link>
+            <Link to='/profile' className='link-nav'> Profile </Link> /
+            <Link to='/news' className='link-nav'> News </Link>
             <div className="chats-list">
                 <ChatsList />
                 <Switch>

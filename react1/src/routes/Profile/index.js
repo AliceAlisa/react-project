@@ -10,7 +10,8 @@ export const Profile = () => {
     return (
         <div>
             <Link to='/' className='link-nav'> Home </Link> /
-            <Link to='/chats' className='link-nav'> Chats </Link>
+            <Link to='/chats' className='link-nav'> Chats </Link> /
+            <Link to='/news' className='link-nav'> News </Link>
             <h1>Your Profile</h1>
             <div>
                 <input type='checkbox' name="profile_option" onChange={() => {
