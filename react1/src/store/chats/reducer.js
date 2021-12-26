@@ -1,7 +1,7 @@
 import { CREATE_CHAT, DELETE_CHAT } from './actions'
 
 const initialState = {
-    chats: [{
+    chats: [/*{
         id: '1',
         name: 'Chat one'
     },
@@ -16,7 +16,7 @@ const initialState = {
     {
         id: '4',
         name: 'Chat four'
-    }],
+    }*/],
 }
 
 export const chatsReducer = (state = initialState, action) => {

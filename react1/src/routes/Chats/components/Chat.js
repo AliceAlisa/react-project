@@ -1,11 +1,12 @@
 import '../../../App.css';
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { TextField, Button, List, ListItem } from "@material-ui/core";
 import { Redirect, useParams } from 'react-router-dom';
 import { getChatsList } from "../../../store/chats/selectors";
 import { useDispatch, useSelector } from "react-redux";
 import { getMessagesByChatId } from '../../../store/messages/selectors'
-import { addMessageWithThunk } from '../../../store/messages/actions';
+import { newMessageWithThunk, offTrackingNewMessageWithThunk, onTrackingNewMessageWithThunk } from '../../../store/messages/actions';
+import { getUserId } from '../../../store/login/selectors';
 
 export const Chat = () => {
     const [value, setValue] = useState('');
@@ -15,16 +16,25 @@ export const Chat = () => {
 
     const ChatsList = useSelector(getChatsList)
     const messages = useSelector(getMessagesByChatId([chatId])) || [];
+    const userId = useSelector(getUserId);
 
-    const onSubmit = useCallback(() => {
-        dispatch(addMessageWithThunk(chatId, 'user', value));
+    const onSubmit = () => {
+        const newMessageText = {
+            user: userId,
+            text: value
+        }
+        dispatch(newMessageWithThunk(chatId, newMessageText))
         setValue('');
         focusText();
-    }, [chatId, dispatch, value]);
+    };
 
     useEffect(() => {
-        focusText();
-    }, [chatId]);
+        dispatch(onTrackingNewMessageWithThunk(chatId))
+        console.log(messages)
+        return () => {
+            dispatch(offTrackingNewMessageWithThunk(chatId))
+        }
+    }, []);
 
     const onChange = (event) => {
         setValue(event.target.value);
@@ -41,7 +51,7 @@ export const Chat = () => {
     return (
         <div className="messages-container">
             <List className="messages"> {
-                messages.map((message) => <ListItem className="message_text" key={message.id}><span className="author">{message.author}</span> : {message.text}</ListItem>)
+                messages.map((message) => <ListItem className="message_text" key={message.id}>{message.user} : {message.text}</ListItem>)
             }
             </List>
             <form onSubmit={onSubmit} action="" className="message_form">

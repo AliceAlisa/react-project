@@ -14,7 +14,9 @@
 .link-nav:hover {
   color: blue;
 }
-
+.logout-btn {
+  margin-bottom: 15px;
+}
 .chats-list {
   display: flex;
   justify-content: space-around;

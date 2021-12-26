@@ -1,24 +1,38 @@
+import { useEffect, useCallback } from 'react';
 import { Button, List, ListItem } from "@material-ui/core";
 import { Link } from 'react-router-dom';
 import '../../../App.css';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getChatsList } from "../../../store/chats/selectors";
-import { deleteChat } from "../../../store/chats/actions";
+import { deleteChatWithThunk, offTrackingDeleteChatWithThunk, onTrackingDeleteChatWithThunk } from "../../../store/chats/actions";
 import { ChatAdd } from './ChatAdd.js'
-import { deleteMessages } from '../../../store/messages/actions';
+import { deleteMessagesWithThunk } from '../../../store/messages/actions';
 
 
-export const ChatsListRender = ({ deleteChat, deleteMessages, chats }) => {
+export const ChatsList = () => {
+    const chats = useSelector(getChatsList);
+    const dispatch = useDispatch();
+
+    const onDelete = useCallback((id) => {
+        dispatch(deleteChatWithThunk(id))
+        dispatch(deleteMessagesWithThunk(id))
+    }, []);
+
+    useEffect(() => {
+        dispatch(onTrackingDeleteChatWithThunk);
+        return () => {
+            dispatch(offTrackingDeleteChatWithThunk)
+        }
+    }, [])
 
     return (
         <div className="list-chats">
             <h3>Your Chats</h3>
             <List className="chats"> {
-                chats.map((chat) => <ListItem className="chat_name" key={chat.id}>
+                chats?.map((chat) => <ListItem className="chat_name" key={chat.id}>
                     <Link to={'/chats/' + chat.id} className='link-nav'>{chat.name}</Link>
                     <Button onClick={() => {
-                        deleteChat(chat.id);
-                        deleteMessages(chat.id)
+                        onDelete(chat.id);
                     }}>-</Button>
                 </ListItem>)
             }
@@ -27,14 +41,3 @@ export const ChatsListRender = ({ deleteChat, deleteMessages, chats }) => {
         </div>
     );
 }
-
-const mapStateToProps = (state) => {
-    return {
-        chats: getChatsList(state),
-    }
-};
-const mapDispatchToProps = {
-    deleteChat,
-    deleteMessages
-};
-export const ChatsList = connect(mapStateToProps, mapDispatchToProps)(ChatsListRender);

@@ -1,7 +1,7 @@
 import { Button, Input } from "@material-ui/core";
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useDispatch } from "react-redux";
-import { createChat } from '../../../store/chats/actions'
+import { createChat, createChatWithThunk, offTrackingCreateChatWithThunk, onTrackingCreateChatWithThunk } from '../../../store/chats/actions'
 
 export const ChatAdd = () => {
     const dispatch = useDispatch();
@@ -17,12 +17,16 @@ export const ChatAdd = () => {
 
     const onSubmit = (event) => {
         event.preventDefault();
-        dispatch(createChat({
-            id: Date.now().toString(),
-            name: formValue
-        }))
+        dispatch(createChatWithThunk(createChat(formValue)))
         formReset()
     };
+
+    useEffect(() => {
+        dispatch(onTrackingCreateChatWithThunk);
+        return () => {
+            dispatch(offTrackingCreateChatWithThunk)
+        }
+    }, [])
 
     return (
         <div className="new_chat">
