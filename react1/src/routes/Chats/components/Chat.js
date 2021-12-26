@@ -2,68 +2,56 @@ import '../../../App.css';
 import { useEffect, useState, useRef } from 'react';
 import { TextField, Button, List, ListItem } from "@material-ui/core";
 import { Redirect, useParams } from 'react-router-dom';
+import { getChatsList } from "../../../store/chats/selectors";
+import { useDispatch, useSelector } from "react-redux";
+import { getMessagesByChatId } from '../../../store/messages/selectors'
+import { newMessageWithThunk, offTrackingNewMessageWithThunk, onTrackingNewMessageWithThunk } from '../../../store/messages/actions';
+import { getUserId } from '../../../store/login/selectors';
 
-export const Chat = ({ list }) => {
-    const [messageList, setMessageList] = useState([]);
+export const Chat = () => {
     const [value, setValue] = useState('');
     const focusedRef = useRef();
     const { chatId } = useParams();
+    const dispatch = useDispatch();
 
-    useEffect(() => {
-        const checkMessage = () => {
-            if (messageList.length > 0 && messageList[messageList.length - 1].author === 'user') {
-                setMessageList((state) => {
-                    const copyState = [...state];
-                    copyState.push({
-                        author: 'bot',
-                        text: 'hello! I am bot',
-                        id: Date.now()
-                    })
-                    return copyState;
-                })
-            }
-            return
-        };
+    const ChatsList = useSelector(getChatsList)
+    const messages = useSelector(getMessagesByChatId([chatId])) || [];
+    const userId = useSelector(getUserId);
 
-        const timerAnswer = setTimeout(() => {
-            checkMessage();
-        }, 1500);
-
-        return () => {
-            clearTimeout(timerAnswer);
+    const onSubmit = () => {
+        const newMessageText = {
+            user: userId,
+            text: value
         }
-    }, [messageList]);
+        dispatch(newMessageWithThunk(chatId, newMessageText))
+        setValue('');
+        focusText();
+    };
 
     useEffect(() => {
-        setMessageList([])
-        focusText();
-    }, [chatId]);
+        dispatch(onTrackingNewMessageWithThunk(chatId))
+        console.log(messages)
+        return () => {
+            dispatch(offTrackingNewMessageWithThunk(chatId))
+        }
+    }, []);
 
     const onChange = (event) => {
         setValue(event.target.value);
     }
 
-    const onSubmit = (event) => {
-        event.preventDefault();
-        const copyMessages = [...messageList];
-        copyMessages.push({ author: 'user', text: value, id: Date.now() });
-        setMessageList(copyMessages);
-        setValue('');
-        focusText();
-    };
-
     const focusText = () => {
         focusedRef.current.focus();
     };
 
-    if (!list.find(({ id }) => id === chatId)) {
+    if (!ChatsList.find(({ id }) => id === chatId)) {
         return <Redirect to='/404notfound' />
     };
 
     return (
         <div className="messages-container">
             <List className="messages"> {
-                messageList.map((message) => <ListItem className="message_text" key={message.id}><span className="author">{message.author}</span> : {message.text}</ListItem>)
+                messages.map((message) => <ListItem className="message_text" key={message.id}>{message.user} : {message.text}</ListItem>)
             }
             </List>
             <form onSubmit={onSubmit} action="" className="message_form">

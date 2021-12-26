@@ -4,14 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CHANGE_OPTION } from '../../store/profile/actions';
 
 export const Profile = () => {
-    const currenOptionState = useSelector((state) => state.someOption);
+    const currenOptionState = useSelector((state) => state.profile.someOption);
     const dispatch = useDispatch();
 
-    console.log(currenOptionState)
     return (
         <div>
             <Link to='/' className='link-nav'> Home </Link> /
-            <Link to='/chats' className='link-nav'> Chats </Link>
+            <Link to='/chats' className='link-nav'> Chats </Link> /
+            <Link to='/news' className='link-nav'> News </Link>
             <h1>Your Profile</h1>
             <div>
                 <input type='checkbox' name="profile_option" onChange={() => {
